@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load data
-data = pd.read_csv('pecatu_electric_bicycle_data.csv')
+data = pd.read_csv('pecatu_electric_bicycle_data.csv')   
+
 
 # Create sidebar with filters
 st.sidebar.title("Filter Data")
@@ -26,3 +27,8 @@ st.pyplot(fig)
 
 # Visualisasi 2: Durasi penyewaan rata-rata per jam
 st.subheader("Durasi Penyewaan Rata-Rata Per Jam")
+fig, ax = plt.subplots()
+sns.lineplot(x='jam', y='durasi_sewa', data=filtered_data, err_style='band', ax=ax)
+plt.xlabel('Jam')
+plt.ylabel('Durasi Sewa Rata-Rata (menit)')
+st.pyplot(fig)
