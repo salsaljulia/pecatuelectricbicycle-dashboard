@@ -14,4 +14,4 @@ from sklearn.linear_model import LinearRegression  # untuk menggunakan model reg
 from sklearn.metrics import mean_squared_error, r2_score  # untuk menghitung metrik evaluasi model
 
 # Run steamlit app
-streamlit run dashboard.py
+streamlit run streamlit_app.py
