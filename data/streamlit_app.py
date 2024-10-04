@@ -7,56 +7,53 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
-# Fungsi untuk memuat data
-@st.cache_data  # Meng-cache data untuk meningkatkan performa
-def load_data():
-    hourly_data = pd.read_csv('hour.csv')  # Ganti dengan path yang sesuai jika diperlukan
-    daily_data = pd.read_csv('day.csv')  # Ganti dengan path yang sesuai jika diperlukan
-    hourly_data['dteday'] = pd.to_datetime(hourly_data['dteday'])
-    daily_data['dteday'] = pd.to_datetime(daily_data['dteday'])
-    return hourly_data, daily_data
+# Set title of the app
+st.title("Pecatu Electric Bicycle Rental Dashboard")
 
-hourly_data, daily_data = load_data()
+# Load datasets
+hourly_data = pd.read_csv('hour.csv')
+daily_data = pd.read_csv('day.csv')
 
-# Judul aplikasi
-st.title('Analisis Penyewaan Pecatu Electric Bicycle')
+# Convert 'dteday' to datetime
+hourly_data['dteday'] = pd.to_datetime(hourly_data['dteday'])
+daily_data['dteday'] = pd.to_datetime(daily_data['dteday'])
 
-# Menampilkan data awal
-if st.checkbox('Tampilkan Data Awal'):
-    st.subheader('Data Jam')
+# Display data
+if st.checkbox("Show Hourly Data"):
     st.write(hourly_data.head())
-    st.subheader('Data Hari')
+
+if st.checkbox("Show Daily Data"):
     st.write(daily_data.head())
 
-# Distribusi penyewaan berdasarkan jam
-st.subheader('Distribusi Penyewaan Berdasarkan Jam')
-fig, ax = plt.subplots(figsize=(12, 6))
-sns.histplot(hourly_data['hr'], bins=24, kde=False, ax=ax)
-ax.set_title('Distribusi Penyewaan Pecatu Electric Bicycle Berdasarkan Jam')
-ax.set_xlabel('Jam dalam Sehari')
-ax.set_ylabel('Frekuensi')
-st.pyplot(fig)
+# Distribution of bike rentals by hour
+st.subheader('Distribusi Penyewaan Sepeda Berdasarkan Jam')
+hourly_fig = plt.figure(figsize=(12, 6))
+sns.histplot(hourly_data['hr'], bins=24, kde=False)
+plt.title('Distribusi Penyewaan Sepeda Berdasarkan Jam')
+plt.xlabel('Jam dalam Sehari')
+plt.ylabel('Frekuensi')
+st.pyplot(hourly_fig)
 
-# Distribusi penyewaan berdasarkan musim
-st.subheader('Distribusi Penyewaan Berdasarkan Musim')
-fig, ax = plt.subplots(figsize=(12, 6))
-sns.countplot(x='season', data=hourly_data, ax=ax)
-ax.set_title('Distribusi Penyewaan Pecatu Electric Bicycle Berdasarkan Musim')
-ax.set_xlabel('Musim')
-ax.set_ylabel('Frekuensi')
-st.pyplot(fig)
+# Distribution of bike rentals by season
+st.subheader('Distribusi Penyewaan Sepeda Berdasarkan Musim')
+season_fig = plt.figure(figsize=(12, 6))
+sns.countplot(x='season', data=hourly_data)
+plt.title('Distribusi Penyewaan Sepeda Berdasarkan Musim')
+plt.xlabel('Musim')
+plt.ylabel('Frekuensi')
+st.pyplot(season_fig)
 
-# Analisis korelasi
+# Correlation heatmap
 st.subheader('Heatmap Korelasi')
 numeric_data = hourly_data.select_dtypes(include=[np.number])
 correlation_matrix = numeric_data.corr()
-fig, ax = plt.subplots(figsize=(14, 10))
-sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', ax=ax)
-ax.set_title('Heatmap Korelasi Pecatu Electric Bicycle')
-st.pyplot(fig)
+heatmap_fig = plt.figure(figsize=(14, 10))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f')
+plt.title('Heatmap Korelasi Penyewaan Sepeda')
+st.pyplot(heatmap_fig)
 
-# Model regresi
-st.subheader('Model Regresi')
+# Model Training
+st.subheader('Prediksi Penyewaan Sepeda')
 fitur = ['season', 'yr', 'mnth', 'hr', 'holiday', 'weekday', 'workingday', 'weathersit', 'temp', 'atemp', 'hum', 'windspeed']
 target = 'cnt'
 
@@ -64,14 +61,21 @@ X = hourly_data[fitur]
 y = hourly_data[target]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+# Train the model
 model = LinearRegression()
 model.fit(X_train, y_train)
 
+# Make predictions
 y_pred = model.predict(X_test)
 
-# Evaluasi model
-mse = mean_squared_error(y_test, y_pred)  # Menghitung Mean Squared Error
-r2 = r2_score(y_test, y_pred)  # Menghitung R2 Score
+# Evaluate the model
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
 
-st.write(f'Mean Squared Error: **{mse:.2f}**')
-st.write(f'R2 Score: **{r2:.2f}**')
+# Display model evaluation
+st.write("Mean Squared Error (MSE):", mse)
+st.write("R-squared Score (R2):", r2)
+
+# Run the Streamlit app
+if __name__ == "__main__":
+    st.run()
