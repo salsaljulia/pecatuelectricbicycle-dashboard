@@ -1,20 +1,17 @@
-# Setup Environment - Anaconda
-conda create --name main-ds python=3.9
+# Setup Environment - Google Colab
+import pandas as pd  # untuk manipulasi data dan pengolahan data tabular
 
-conda activate main-ds
+import numpy as np  # untuk operasi numerik dan array
 
-pip install -r requirements.txt
+import matplotlib.pyplot as plt  # untuk membuat grafik dan visualisasi
 
-# Setup Environment - Shell/Terminal
-mkdir proyek_analisis_data
+import seaborn as sns  # untuk visualisasi data yang lebih informatif dan menarik
 
-cd proyek_analisis_data
+from sklearn.model_selection import train_test_split  # untuk membagi data menjadi set pelatihan dan pengujian
 
-pipenv install
+from sklearn.linear_model import LinearRegression  # untuk menggunakan model regresi linier
 
-pipenv shell
-
-pip install -r requirements.txt
+from sklearn.metrics import mean_squared_error, r2_score  # untuk menghitung metrik evaluasi model
 
 # Run steamlit app
 streamlit run dashboard.py
