@@ -4,16 +4,17 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load data
-data = pd.read_csv('pecatu_electric_bicycle_data.csv')
+data = pd.read_csv('day.csv')
+data = pd.read_csv('hour.csv')
 
 # Create sidebar with filters
 st.sidebar.title("Filter Data")
-start_date = st.sidebar.date_input("Start Date", data['tanggal'].min())
-end_date = st.sidebar.date_input("End Date", data['tanggal'].max())
+start_date = st.sidebar.daily_data("Start Date", data[''].min())
+end_date = st.sidebar.date_input("End Date", data['dteday'].max())
 selected_station = st.sidebar.selectbox("Station", data['stasiun'].unique())
 
 # Filter data based on user input
-filtered_data = data[(data['tanggal'] >= start_date) & (data['tanggal'] <= end_date) & (data['stasiun'] == selected_station)]
+filtered_data = data[(data['dteday'] >= start_date) & (data['dteday'] <= end_date) & (data['stasiun'] == selected_station)]
 
 # Create main page with visualizations
 st.title("Dashboard Sepeda Listrik Pecatu")
@@ -27,7 +28,7 @@ st.pyplot(fig)
 # Visualisasi 2: Durasi penyewaan rata-rata per jam
 st.subheader("Durasi Penyewaan Rata-Rata Per Jam")
 fig, ax = plt.subplots()
-sns.lineplot(x='jam', y='durasi_sewa', data=filtered_data, err_style='band', ax=ax)
-plt.xlabel('Jam')
+sns.lineplot(x='hour', y='duration', data=filtered_data, err_style='band', ax=ax)
+plt.xlabel('Hour')
 plt.ylabel('Durasi Sewa Rata-Rata (menit)')
 st.pyplot(fig)
