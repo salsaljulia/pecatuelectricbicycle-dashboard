@@ -100,4 +100,5 @@ try:
     plt.xlabel("Actual Bike Rentals")
     plt.ylabel("Predicted Bike Rentals")
     plt.title("Actual vs. Predicted Bike Rentals")
+    
     st.pyplot(prediction_fig)
