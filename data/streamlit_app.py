@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load data
-data = pd.read_csv('pecatu_electric_bicycle_data.csv')   
-
+data = pd.read_csv('pecatu_electric_bicycle_data.csv')
 
 # Create sidebar with filters
 st.sidebar.title("Filter Data")
