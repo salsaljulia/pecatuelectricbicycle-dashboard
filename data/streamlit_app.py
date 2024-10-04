@@ -1,79 +1,37 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 import streamlit as st
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, r2_score
 
-# Set title of the app
-st.title("Pecatu Electric Bicycle Rental Dashboard")
+# Load data
+data = pd.read_csv('data.csv')
 
-# Load datasets
-hourly_data = pd.read_csv('hour.csv')  # Pastikan file hour.csv berada di direktori yang sama
-daily_data = pd.read_csv('day.csv')    # Pastikan file day.csv berada di direktori yang sama
+# Preprocessing data (jika diperlukan)
 
-# Convert 'dteday' to datetime
-hourly_data['dteday'] = pd.to_datetime(hourly_data['dteday'])
-daily_data['dteday'] = pd.to_datetime(daily_data['dteday'])
+# Split data menjadi fitur dan target
+X = data[['feature1', 'feature2']]  # Ganti dengan fitur yang Anda gunakan
+y = data['target']
 
-# Display data
-if st.checkbox("Show Hourly Data"):
-    st.subheader("Hourly Data")
-    st.write(hourly_data.head())
-
-if st.checkbox("Show Daily Data"):
-    st.subheader("Daily Data")
-    st.write(daily_data.head())
-
-# Distribution of bike rentals by hour
-st.subheader('Distribusi Penyewaan Sepeda Berdasarkan Jam')
-hourly_fig = plt.figure(figsize=(12, 6))
-sns.histplot(hourly_data['hr'], bins=24, kde=False)
-plt.title('Distribusi Penyewaan Sepeda Berdasarkan Jam')
-plt.xlabel('Jam dalam Sehari')
-plt.ylabel('Frekuensi')
-st.pyplot(hourly_fig)
-
-# Distribution of bike rentals by season
-st.subheader('Distribusi Penyewaan Sepeda Berdasarkan Musim')
-season_fig = plt.figure(figsize=(12, 6))
-sns.countplot(x='season', data=hourly_data)
-plt.title('Distribusi Penyewaan Sepeda Berdasarkan Musim')
-plt.xlabel('Musim')
-plt.ylabel('Frekuensi')
-st.pyplot(season_fig)
-
-# Correlation heatmap
-st.subheader('Heatmap Korelasi')
-numeric_data = hourly_data.select_dtypes(include=[np.number])
-correlation_matrix = numeric_data.corr()
-heatmap_fig = plt.figure(figsize=(14, 10))
-sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f')
-plt.title('Heatmap Korelasi Penyewaan Sepeda')
-st.pyplot(heatmap_fig)
-
-# Model Training
-st.subheader('Prediksi Penyewaan Sepeda')
-fitur = ['season', 'yr', 'mnth', 'hr', 'holiday', 'weekday', 'workingday', 'weathersit', 'temp', 'atemp', 'hum', 'windspeed']
-target = 'cnt'
-
-X = hourly_data[fitur]
-y = hourly_data[target]
+# Split data menjadi data training dan testing
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Train the model
+# Buat model
 model = LinearRegression()
 model.fit(X_train, y_train)
 
-# Make predictions
+# Buat prediksi
 y_pred = model.predict(X_test)
 
-# Evaluate the model
-mse = mean_squared_error(y_test, y_pred)
-r2 = r2_score(y_test, y_pred)
+# Buat grafik
+fig, ax = plt.subplots()
+ax.scatter(y_test, y_pred)
+ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=4)
+ax.set_xlabel('Actual')
+ax.set_ylabel('Predicted')
+st.pyplot(fig)
 
-# Display model evaluation
-st.write("Mean Squared Error (MSE):", mse)
-st.write("R-squared Score (R2):", r2)
+# Tampilkan metrik evaluasi model
+st.write('Mean Squared Error:', mean_squared_error(y_test, y_pred))
+st.write('R-squared:', r2_score(y_test, y_pred))
