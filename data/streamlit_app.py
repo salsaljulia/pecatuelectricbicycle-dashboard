@@ -1,57 +1,28 @@
+import streamlit as st
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import streamlit as st
 
-# Membaca data dari file CSV
-data = pd.read_csv('hour.csv')
+# Load data
+data = pd.read_csv('pecatu_electric_bicycle_data.csv')
 
-# Konversi kolom 'dteday' ke format datetime
-data['dteday'] = pd.to_datetime(data['dteday'])
+# Create sidebar with filters
+st.sidebar.title("Filter Data")
+start_date = st.sidebar.date_input("Start Date", data['tanggal'].min())
+end_date = st.sidebar.date_input("End Date", data['tanggal'].max())
+selected_station = st.sidebar.selectbox("Station", data['stasiun'].unique())
 
-# Mendefinisikan fungsi untuk menampilkan histogram jam penyewaan
-def hourly_rental_distribution():
-  plt.figure(figsize=(12, 6))
-  sns.histplot(data['hr'], bins=24, kde=False)
-  plt.title('Distribusi Penyewaan Sepeda Listrik Pecatu Berdasarkan Jam')
-  plt.xlabel('Jam dalam Sehari')
-  plt.ylabel('Frekuensi')
-  st.pyplot(plt)
+# Filter data based on user input
+filtered_data = data[(data['tanggal'] >= start_date) & (data['tanggal'] <= end_date) & (data['stasiun'] == selected_station)]
 
-# Judul dan deskripsi dashboard
-st.title('Analisis Penyewaan Sepeda Listrik Pecatu')
-st.write('Dashboard ini menampilkan distribusi jam penyewaan sepeda listrik Pecatu berdasarkan data yang tersedia.')
+# Create main page with visualizations
+st.title("Dashboard Sepeda Listrik Pecatu")
 
-# Menjalankan fungsi untuk menampilkan histogram
-hourly_rental_distribution()
+# Visualisasi 1: Jumlah penyewaan per hari
+st.subheader("Jumlah Penyewaan Per Hari")
+fig, ax = plt.subplots()
+sns.countplot(x='tanggal', data=filtered_data, ax=ax)
+st.pyplot(fig)
 
-def seasonal_analysis():
-  # Group data by month and calculate the mean number of rentals
-  monthly_rentals = data.groupby('mnth')['cnt'].mean()
-
-  plt.figure(figsize=(12, 6))
-  sns.lineplot(x=monthly_rentals.index, y=monthly_rentals)
-  plt.title('Rata-rata Penyewaan Sepeda Listrik per Bulan')
-  plt.xlabel('Bulan')
-  plt.ylabel('Jumlah Penyewaan')
-  st.pyplot(plt)
-
-# Memanggil fungsi untuk menampilkan analisis musiman
-seasonal_analysis()
-
-def correlation_heatmap():
-  # Menghitung matriks korelasi
-  corr_matrix = data.corr()
-
-  plt.figure(figsize=(10, 8))
-  sns.heatmap(corr_matrix, annot=True, cmap='coolwarm')
-  plt.title('Korelasi Antar Fitur')
-  st.pyplot(plt)
-
-# Memanggil fungsi untuk menampilkan heatmap
-correlation_heatmap()
-
-# Slider untuk memilih tahun
-year_slider = st.slider('Pilih Tahun', int(data['yr'].min()), int(data['yr'].max()))
-filtered_data = data[data['yr'] == year_slider]
+# Visualisasi 2: Durasi penyewaan rata-rata per jam
+st.subheader("Durasi Penyewaan Rata-Rata Per Jam")
