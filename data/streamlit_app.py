@@ -95,9 +95,9 @@ try:
     st.write(f"R-squared Score (R2): {r2:.2f}")
 
 # Visualize actual vs. predicted values
-prediction_fig = plt.figure(figsize=(12, 6))
-plt.scatter(y_test, y_pred)
-plt.xlabel("Actual Bike Rentals")
-plt.ylabel("Predicted Bike Rentals")
-plt.title("Actual vs. Predicted Bike Rentals")
-st.pyplot(prediction_fig)
+    prediction_fig = plt.figure(figsize=(12, 6))
+    plt.scatter(y_test, y_pred)
+    plt.xlabel("Actual Bike Rentals")
+    plt.ylabel("Predicted Bike Rentals")
+    plt.title("Actual vs. Predicted Bike Rentals")
+    st.pyplot(prediction_fig)
