@@ -90,9 +90,9 @@ try:
     r2 = r2_score(y_test, y_pred)
 
    # Display model evaluation with clear formatting
-st.subheader("Model Evaluation")
-st.write(f"Mean Squared Error (MSE): {mse:.2f}")
-st.write(f"R-squared Score (R2): {r2:.2f}")
+    st.subheader("Model Evaluation")
+    st.write(f"Mean Squared Error (MSE): {mse:.2f}")
+    st.write(f"R-squared Score (R2): {r2:.2f}")
 
 # Visualize actual vs. predicted values
 prediction_fig = plt.figure(figsize=(12, 6))
