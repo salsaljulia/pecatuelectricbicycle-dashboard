@@ -6,14 +6,13 @@ import streamlit as st
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
-streamlit run streamlit_app.py
 
 # Set title of the app
 st.title("Pecatu Electric Bicycle Rental Dashboard")
 
 # Load datasets
-hourly_data = pd.read_csv('hour.csv')
-daily_data = pd.read_csv('day.csv')
+hourly_data = pd.read_csv('hour.csv')  # Pastikan file hour.csv berada di direktori yang sama
+daily_data = pd.read_csv('day.csv')    # Pastikan file day.csv berada di direktori yang sama
 
 # Convert 'dteday' to datetime
 hourly_data['dteday'] = pd.to_datetime(hourly_data['dteday'])
@@ -76,7 +75,3 @@ r2 = r2_score(y_test, y_pred)
 # Display model evaluation
 st.write("Mean Squared Error (MSE):", mse)
 st.write("R-squared Score (R2):", r2)
-
-# Run the Streamlit app
-if __name__ == "__main__":
-    st.run()
